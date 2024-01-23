@@ -13,6 +13,7 @@ import {
   WorkspaceLeaf,
 } from 'obsidian';
 
+
 interface FilePath {
   path: string;
   basename: string;
@@ -111,7 +112,21 @@ class RecentFilesListView extends ItemView {
         cls: 'tree-item-inner nav-file-title-content recent-files-title-content',
       });
 
-      navFileTitleContent.setText(currentFile.basename);
+      // add ----------------------------------------------
+      const currentTFile = this.app.metadataCache.getFirstLinkpathDest(
+        currentFile.basename,
+        currentFile.path
+        );
+      let title;
+      const metadata = this.app.metadataCache.getFileCache(currentTFile)
+     // if (!file.extension?.match(/^(md|markdown)$/)) return linkText;
+
+      if (currentTFile == null) title = currentFile.basename;
+      else if(!metadata.frontmatter || !metadata.frontmatter["title"]) title = currentFile.basename;
+      else title = metadata.frontmatter["title"];
+      // ---------------------------------------------------
+
+      navFileTitleContent.setText(title);
 
       if (openFile && currentFile.path === openFile.path) {
         navFileTitle.addClass('is-active');
